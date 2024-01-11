@@ -1,44 +1,50 @@
+import express from 'express';
+import { rutas } from './utils/rutas.js';
+
+
+
+console.log('Bienvenido a mi App')
+
+
+
+const port = 3000;
+
+const app = express();
 console.log('------------------------------------');
 
-let a: Number | string = 1;
-enum Talla {
-    XS,
-    S,
-    M,
-    L,
-    XL
-}
 
-let person = {
-    name: 'Jhon',
-    age: 31,
-    talla: Talla.L
-};
-
-let person2: {
-    name: string,
-    age: number,
-    talla: Talla
-} = {
-    name: 'Jhon',
-    age: 30,
-    talla: Talla.L
-};
-
-person2 = person;
-
-let suma : (a: number, b: number) => number;
-
-suma = (num1, num2) => {
-    return (num1 + num2);
-}
+app.set('view engine', 'ejs');
+app.set('views', rutas.views); // cambiar
 
 
-let var1: unknown;
-let var2: any;
-let var3: string;
+app.get('/saludo', (req, res, next) => {
+    res.render('prueba', {nombre: 'Jose'});
+});
 
-var1 = "casa";
-var2 = "calle";
 
-var3 = var1 + var2;
+app.get('/automovil', (req, res, next) => {
+    console.log('Paso por automovil');
+    res.redirect('/coche');
+});
+
+app.use('/coche', (req, res, next) => {
+    console.log('Paso por coche');
+    next();
+});
+
+app.use('/', (req, res, next) => {
+    console.log('Paso por el middleware 3');
+    res.status(404 ).send({"message": "No se encontro la ruta"});
+});
+
+app.use('/coche', (req, res, next) => {
+    console.log('Paso por el coche 2');
+    res.send({"message": "coche 2"});
+});
+
+
+
+app.listen(port);
+console.log("Servidor escuchando en el puerto: " + port);
+
+
